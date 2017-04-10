@@ -48,37 +48,7 @@ if(get_option('jr_resizeupload_version') != $PLUGIN_VERSION) {
 add_action('admin_menu', 'jr_uploadresize_options_page');
 
 // Hook the function to the upload handler
-
-
-// function check_code() {
-//   global $pagenow;
-//   if ( $pagenow == 'post.php' ) {
-//     //add_action('wp_handle_upload', 'jr_uploadresize_resize');  
-//     add_action('admin_notices', 'general_admin_notice');
-//   }
-// }
-// check_code();
-
 add_action('wp_handle_upload', 'jr_uploadresize_resize');  
-// function checkcode_upload() {
-//   global $pagenow;
-//   if ( $pagenow != 'admin.php' ) {
-//     return false;
-//   } else {
-//     return jr_uploadresize_resize();
-//   }
-// }
-//add_action('wp_handle_upload', 'checkcode_upload');  
-
-function general_admin_notice(){
-    global $pagenow;
-    // if ( $pagenow == 'admin.php' ) {
-         echo '<div class="notice notice-warning is-dismissible">
-             <p>This notice appears on the settings page.</p>
-         </div>';
-    //}
-}
-//add_action('admin_notices', 'general_admin_notice');
 
 /**
 * Add the options page
@@ -314,39 +284,6 @@ function jr_uploadresize_options(){
 
 		</table>
 
-		<?php /* DEFINED HERE FOR FUTURE RELEASE - does not do anything if uncommented
-		<hr style="margin-top:20px; margin-bottom:20px;">
-
-		<h3>Image conversion options</h3>
-		<p style="max-width:700px">Photos saved as PNG and GIF images can be extremely large in file size due to their compression methods not being suited for photos. Enable these options below to automatically convert GIF and/or PNG images to JPEG.</p>
-
-		<p>When enabled, conversion will happen to all uploaded GIF/PNG images, not just ones that require resizing.</p>
-
-		<table class="form-table">
-
-			<tr>
-				<th scope="row">Convert GIF to JPEG</th>
-				<td>
-					<select id="convert-gif" name="convertgif">
-						<option value="no" <?php if($convert_gif_to_jpg == 'no') : ?>selected<?php endif; ?>>NO - just resize uploaded gif images as normal</option>
-						<option value="yes" <?php if($convert_gif_to_jpg == 'yes') : ?>selected<?php endif; ?>>YES - convert all uploaded gif images to jpeg</option>
-					</select>
-				</td>
-			</tr>
-
-			<tr>
-				<th scope="row">Convert PNG to JPEG</th>
-				<td>
-					<select id="convert-png" name="convertpng">
-						<option value="no" <?php if($convert_png_to_jpg == 'no') : ?>selected<?php endif; ?>>NO - just resize uploaded png images as normal</option>
-						<option value="yes" <?php if($convert_png_to_jpg == 'yes') : ?>selected<?php endif; ?>>YES - convert all uploaded png images to jpeg</option>
-					</select>
-				</td>
-			</tr>
-
-		</table>
-		*/ ?>
-
 		<hr style="margin-top:30px;">
 
 		<p class="submit" style="margin-top:10px;border-top:1px solid #eee;padding-top:20px;">
@@ -377,13 +314,7 @@ function jr_uploadresize_resize($image_data){
   $resizing_enabled = get_option('jr_resizeupload_resize_yesno');
 	$resizing_enabled = ($resizing_enabled=='yes') ? true : false;
 
-  global $pagenow;
-  if($pagenow == 'admin.php') {
-    $resizing_enabled = true;
-  } else {
-    $resizing_enabled = false;
-  }
-        // if ( $pagenow == 'admin.php' )
+      
 
   $force_jpeg_recompression = get_option('jr_resizeupload_recompress_yesno');
 	$force_jpeg_recompression = ($force_jpeg_recompression=='yes') ? true : false;
@@ -406,7 +337,7 @@ function jr_uploadresize_resize($image_data){
 	$convert_bmp_to_jpg = ($convert_bmp_to_jpg=='yes') ? true : false;
 
 
-
+  
   //---------- In with the old v1.6.2, new v1.7 (WP_Image_Editor) ------------
 
   if($resizing_enabled || $force_jpeg_recompression) {
@@ -441,15 +372,10 @@ function jr_uploadresize_resize($image_data){
       if($resizing_enabled) {
 
         $page_id = $_GET['page'];
-        // $current_screen = get_current_screen();
-        // if($current_screen == null || $current_screen = '') {
-        //   echo 'null-screen';
-        // }
-        // print_r($current_screen);
-        // echo $current_screen->id;
-
-        // global $pagenow;
-        // if ( $pagenow == 'admin.php' ) {
+        //echo $page_id;
+      
+      
+        if($page_id == 'layerslider') { 
           jr_error_log("--resizing-enabled");
           $sizes = $image_editor->get_size();
 
@@ -466,7 +392,7 @@ function jr_uploadresize_resize($image_data){
           else {
             jr_error_log("--no-resizing-needed");
           }
-        // } // end admin page
+        } // end check page
       }
       else {
         jr_error_log("--no-resizing-requested");
