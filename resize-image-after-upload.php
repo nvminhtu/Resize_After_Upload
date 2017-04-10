@@ -5,7 +5,7 @@ Plugin URI: https://github.com/nvminhtu/Resize_After_Upload
 Description: Plugin for resizing image after Upload, check what current page is post/page to detect action handle_upload wordpress
 Author: Tu Nguyen
 Version: 1.0
-Author URI: http://www.philr.ae/
+Author URI: http://www.minhtu.net/
 */
 
 $PLUGIN_VERSION = '1.7.2';
