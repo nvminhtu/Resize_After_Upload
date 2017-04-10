@@ -1,27 +1,11 @@
 <?php
 /*
-Plugin Name: Resize Image After Upload
-Plugin URI: https://wordpress.org/plugins/resize-image-after-upload/
-Description: Simple plugin to automatically resize uploaded images to within specified maximum width and height. Also has option to force recompression of JPEGs. Configuration options found under <a href="options-general.php?page=resize-after-upload">Settings > Resize Image Upload</a>
-Author: iamphilrae
-Version: 1.7.2
+Plugin Name: Customize Resize Image Upload
+Plugin URI: https://github.com/nvminhtu/Resize_After_Upload
+Description: Plugin for resizing image after Upload, check what current page is post/page to detect action handle_upload wordpress
+Author: Tu Nguyen
+Version: 1.0
 Author URI: http://www.philr.ae/
-
-Copyright (C) 2015 iamphilrae
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 $PLUGIN_VERSION = '1.7.2';
