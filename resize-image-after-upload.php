@@ -27,6 +27,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 $PLUGIN_VERSION = '1.7.2';
 $DEBUG_LOGGER = false;
 
+define( 'IMSANITY_SOURCE_POST', 1 );
+define( 'IMSANITY_SOURCE_LIBRARY', 2 );
+define( 'IMSANITY_SOURCE_OTHER', 4 );
+
 
 // Default plugin values
 if(get_option('jr_resizeupload_version') != $PLUGIN_VERSION) {
@@ -299,6 +303,23 @@ function jr_uploadresize_options(){
 
 
 
+/**
+ * Inspects the request and determines where the upload came from
+ * @return IMSANITY_SOURCE_POST | IMSANITY_SOURCE_LIBRARY | IMSANITY_SOURCE_OTHER
+ */
+function imsanity_get_source() {
+  $id = array_key_exists('post_id', $_REQUEST) ? $_REQUEST['post_id'] : '';
+  $action = array_key_exists('action', $_REQUEST) ? $_REQUEST['action'] : '';
+  
+  // a post_id indicates image is attached to a post
+  if ($id > 0) return IMSANITY_SOURCE_POST; 
+
+  // post_id of 0 is 3.x otherwise use the action parameter
+  if ( $id === 0 || $id === '0' || $action == 'upload-attachment' ) return IMSANITY_SOURCE_LIBRARY;
+  
+  // we don't know where this one came from but $_REQUEST['_wp_http_referer'] may contain info
+  return IMSANITY_SOURCE_OTHER;
+}
 
 
 /**
@@ -337,7 +358,7 @@ function jr_uploadresize_resize($image_data){
 	$convert_bmp_to_jpg = ($convert_bmp_to_jpg=='yes') ? true : false;
 
 
-  
+
   //---------- In with the old v1.6.2, new v1.7 (WP_Image_Editor) ------------
 
   if($resizing_enabled || $force_jpeg_recompression) {
@@ -367,36 +388,39 @@ function jr_uploadresize_resize($image_data){
       $to_save = false;
       $resized = false;
 
-
+      /*------------------------------ start croping ------------------------------*/ 
       // Perform resizing if required
       if($resizing_enabled) {
+          
+          $source = imsanity_get_source();
+          if($source == 1) { //IMSANITY_SOURCE_POST => check current page is post/page 
 
-        $page_id = $_GET['page'];
-        //echo $page_id;
-      
-      
-        if($page_id == 'layerslider') { 
-          jr_error_log("--resizing-enabled");
-          $sizes = $image_editor->get_size();
-
-          if((isset($sizes['width']) && $sizes['width'] > $max_width)
-            || (isset($sizes['height']) && $sizes['height'] > $max_height)) {
-
-            $image_editor->resize($max_width, $max_height, false);
-            $resized = true;
-            $to_save = true;
-
+            jr_error_log("--resizing-enabled");
             $sizes = $image_editor->get_size();
-            jr_error_log("--new-size--".$sizes['width']."x".$sizes['height']);
+
+            if((isset($sizes['width']) && $sizes['width'] > $max_width)
+              || (isset($sizes['height']) && $sizes['height'] > $max_height)) {
+
+              $image_editor->resize($max_width, $max_height, false);
+              $resized = true;
+              $to_save = true;
+
+              $sizes = $image_editor->get_size();
+              jr_error_log("--new-size--".$sizes['width']."x".$sizes['height']);
+            }
+            else {
+              jr_error_log("--no-resizing-needed");
+            }
+
           }
-          else {
-            jr_error_log("--no-resizing-needed");
-          }
-        } // end check page
+            
+          
       }
       else {
         jr_error_log("--no-resizing-requested");
       }
+
+      /* ---------------------- end croping -----------------------------*/
 
 
       // Regardless of resizing, image must be saved if recompressing
