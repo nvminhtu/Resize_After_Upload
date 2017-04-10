@@ -8,7 +8,7 @@ Version: 1.0
 Author URI: http://www.minhtu.net/
 */
 
-$PLUGIN_VERSION = '1.7.2';
+$PLUGIN_VERSION = '1.0';
 $DEBUG_LOGGER = false;
 
 define( 'IMSANITY_SOURCE_POST', 1 );
@@ -453,3 +453,6 @@ function jr_error_log($message) {
     error_log(print_r($message, true));
   }
 }
+
+remove_action('load-update-core.php','wp_update_plugins');
+add_filter('pre_site_transient_update_plugins','__return_null');
